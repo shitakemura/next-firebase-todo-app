@@ -1,5 +1,7 @@
-import { Box, Flex, HStack, Stack, Text } from "@chakra-ui/react";
+import { Box, Flex, HStack, Text } from "@chakra-ui/react";
 import Link from "next/link";
+import { auth } from "../../firebase";
+import { useAuthContext } from "../../hooks/useAuthContext";
 
 type HeaderContainerProps = {
   children: React.ReactNode;
@@ -22,14 +24,29 @@ const HeaderContainer = ({ children }: HeaderContainerProps) => {
 };
 
 const MenuLinks = () => {
+  const { user } = useAuthContext();
+
+  const handleLogout = () => {
+    auth.signOut();
+  };
+
   return (
     <Box>
       <HStack spacing={8} align='center' justify='center'>
-        <Link href={"/login"} passHref>
-          <Text fontWeight='bold' _hover={{ textDecoration: "underline" }}>
-            Login
+        {user ? (
+          <Text
+            fontWeight='bold'
+            _hover={{ textDecoration: "underline" }}
+            onClick={handleLogout}>
+            Logout
           </Text>
-        </Link>
+        ) : (
+          <Link href={"/login"} passHref>
+            <Text fontWeight='bold' _hover={{ textDecoration: "underline" }}>
+              Login
+            </Text>
+          </Link>
+        )}
       </HStack>
     </Box>
   );

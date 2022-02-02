@@ -1,5 +1,6 @@
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
+import { AuthProvider } from "../hooks/useAuthContext";
 import { ChakraProvider, VStack } from "@chakra-ui/react";
 import Head from "next/head";
 import { Header } from "../components/Header";
@@ -10,10 +11,12 @@ function MyApp({ Component, pageProps }: AppProps) {
       <Head>
         <title>Todo App</title>
       </Head>
-      <ChakraProvider>
-        <Header />
-        <Component {...pageProps} />
-      </ChakraProvider>
+      <AuthProvider>
+        <ChakraProvider>
+          <Header />
+          <Component {...pageProps} />
+        </ChakraProvider>
+      </AuthProvider>
     </VStack>
   );
 }
