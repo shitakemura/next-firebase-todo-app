@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Checkbox, HStack, Text } from "@chakra-ui/react";
 import { Todo as TodoType } from "../../models/Todo";
 import { DeleteIcon } from "@chakra-ui/icons";
+import { useTodos } from "../../hooks/useTodos";
 
 type TodoProps = {
   todo: TodoType;
@@ -9,6 +10,12 @@ type TodoProps = {
 
 export const Todo = ({ todo }: TodoProps) => {
   const [isChecked, setIsChecked] = useState(todo.complete);
+  const { deleteTodo } = useTodos();
+
+  const handleDelete = () => {
+    deleteTodo(todo.id);
+  };
+
   return (
     <HStack
       borderColor='blue.300'
@@ -30,7 +37,12 @@ export const Todo = ({ todo }: TodoProps) => {
           {todo.title}
         </Text>
       </HStack>
-      <DeleteIcon color='blue.500' boxSize={5} _hover={{ boxSize: "6" }} />
+      <DeleteIcon
+        color='blue.500'
+        boxSize={5}
+        _hover={{ boxSize: "6" }}
+        onClick={handleDelete}
+      />
     </HStack>
   );
 };

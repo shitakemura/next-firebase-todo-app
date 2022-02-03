@@ -1,18 +1,26 @@
-import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { db } from "../firebase";
 import { Todo as TodoType } from "../models/Todo";
 import { useAuthContext } from "./useAuthContext";
 
-export const useGetTodos = () => {
+export const useTodos = () => {
   const [todos, setTodos] = useState<TodoType[]>([]);
   const { user } = useAuthContext();
+  const todosCollectionRef = collection(db, "todos");
 
   useEffect(() => {
     if (!user?.uid) return;
 
     const getTodos = async () => {
-      const todosCollectionRef = collection(db, "todos");
       const q = query(todosCollectionRef, where("userId", "==", user.uid));
       const snapshot = await getDocs(q);
       const data = snapshot.docs
@@ -39,7 +47,22 @@ export const useGetTodos = () => {
     };
 
     getTodos();
-  }, [user?.uid]);
+  }, [user?.uid, todosCollectionRef]);
 
-  return { todos };
+  const addTodo = async (title: string) => {
+    const newTodo = {
+      userId: user?.uid,
+      title,
+      complete: false,
+      createdAt: Date.now(),
+    };
+    await addDoc(todosCollectionRef, newTodo);
+  };
+
+  const deleteTodo = async (todoId: string) => {
+    const todoDocumentRef = doc(db, "todos", todoId);
+    await deleteDoc(todoDocumentRef);
+  };
+
+  return { todos, addTodo, deleteTodo };
 };
