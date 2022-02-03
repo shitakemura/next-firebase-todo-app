@@ -1,5 +1,6 @@
 import { Box, Flex, HStack, Text } from "@chakra-ui/react";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { auth } from "../../firebase";
 import { useAuthContext } from "../../hooks/useAuthContext";
 
@@ -25,9 +26,11 @@ const HeaderContainer = ({ children }: HeaderContainerProps) => {
 
 const MenuLinks = () => {
   const { user } = useAuthContext();
+  const router = useRouter();
 
-  const handleLogout = () => {
-    auth.signOut();
+  const handleLogout = async () => {
+    await auth.signOut();
+    router.reload();
   };
 
   return (
