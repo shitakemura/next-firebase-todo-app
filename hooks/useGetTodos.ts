@@ -1,15 +1,20 @@
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { db } from "../firebase";
 import { Todo as TodoType } from "../models/Todo";
+import { useAuthContext } from "./useAuthContext";
 
 export const useGetTodos = () => {
   const [todos, setTodos] = useState<TodoType[]>([]);
+  const { user } = useAuthContext();
 
   useEffect(() => {
+    if (!user?.uid) return;
+
     const getTodos = async () => {
       const todosCollectionRef = collection(db, "todos");
-      const snapshot = await getDocs(todosCollectionRef);
+      const q = query(todosCollectionRef, where("userId", "==", user.uid));
+      const snapshot = await getDocs(q);
       const data = snapshot.docs
         .map((doc) => {
           return {
@@ -34,7 +39,7 @@ export const useGetTodos = () => {
     };
 
     getTodos();
-  }, []);
+  }, [user?.uid]);
 
   return { todos };
 };
