@@ -1,9 +1,10 @@
-import { Stack, Text } from "@chakra-ui/react";
+import { VStack } from "@chakra-ui/react";
+import { TodoList } from "../TodoList";
 
 export const Home = () => {
   return (
-    <Stack>
-      <Text color='blue.500'>Home</Text>
-    </Stack>
+    <VStack w='full' spacing={16} paddingX={48}>
+      <TodoList />
+    </VStack>
   );
 };

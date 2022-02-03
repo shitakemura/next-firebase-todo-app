@@ -17,6 +17,8 @@ export const AuthProvider = ({ children }: AuthProviderType) => {
   const [user, setUser] = useState<firebase.User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  console.log(`userId: ${user?.uid}`);
+
   useEffect(() => {
     const unsubscribed = auth.onAuthStateChanged((user) => {
       setUser(user);
